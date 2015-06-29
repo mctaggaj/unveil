@@ -10,20 +10,21 @@
 
 ;(function($) {
 
-  $.fn.unveil = function(threshold, callback) {
-
+  $.fn.unveil = function(threshold, callback, options) {
     var $w = $(window),
+		options = options || {},
         th = threshold || 0,
         retina = window.devicePixelRatio > 1,
-        attrib = retina? "data-src-retina" : "data-src",
+        attrib = retina? options.srcRetina || "data-src-retina" : options.srcRetina || "data-src",
         images = this,
-        loaded;
+        loaded,
+		setImage = options.setImage || function setImage (item, source) {item.setAttribute("src", source);};
 
     this.one("unveil", function() {
       var source = this.getAttribute(attrib);
       source = source || this.getAttribute("data-src");
       if (source) {
-        this.setAttribute("src", source);
+        setImage(this, source);
         if (typeof callback === "function") callback.call(this);
       }
     });
